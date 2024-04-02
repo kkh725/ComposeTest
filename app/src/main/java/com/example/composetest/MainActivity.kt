@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
             ComposeTestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Androi2d",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -53,17 +54,23 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     var text by remember {
         mutableStateOf(name)
     }
+    var text2 by remember {
+        mutableStateOf(name)
+    }
     Column {
-        modifier.padding(16.dp)
         Row {
-            Text(text = "hi ", color = Color.Red, fontSize = 25.sp)
+            Text(text = text2, modifier.clickable { text2 = "rlahfld" },
+                color = Color.Red, fontSize = 25.sp)
+            Spacer(modifier = Modifier.height(100.dp))
             Text(text = "hi ", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
-            Text(text = "hi",modifier.padding(start = 10.dp, top = 45.dp))
+            Text(text = "hi")
+
         }
         Text(
+
             text = text,
-            modifier = modifier
         )
+
         Text(text = "Text")
         Button(onClick = { text = "hello" }) {
             Text(text = text)
@@ -71,19 +78,10 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     }
 
 }
-@Composable
-fun GreetingScreen() {
-    Scaffold(
-        // Scaffold 설정
-    ) {
-        Greeting(name = "Your Name")
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() { //매게변수를 사용하지않아야한다.
     ComposeTestTheme {
-        GreetingScreen()
+        Greeting(name = "Android")
     }
 }
