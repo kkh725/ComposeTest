@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,21 +41,30 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeTestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Androi2d",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    Column (modifier = Modifier.padding(innerPadding)){
+
+                        Greeting(
+                            name = "Androi2d",
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                        Greeting(name = "android22",modifier = Modifier.padding(innerPadding))
+                    }
                 }
             }
         }
     }
 }
+@Composable
+fun MyButton(text: String, onClick: () -> Unit) {
+    Button(onClick = onClick) {
+        Text(text)
+    }
+}
 //컴포저블 함수 자체가 그냥 하나의 view혹은 레이아웃이라고 생각하면된다.
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    var text by remember {
-        mutableStateOf(name)
-    }
+    var text by remember { mutableStateOf(name) }
+    var state by remember { mutableStateOf(false) }
     var text2 by remember {
         mutableStateOf(name)
     }
@@ -61,10 +72,16 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         Row {
             Text(text = text2, modifier.clickable { text2 = "rlahfld" },
                 color = Color.Red, fontSize = 25.sp)
-            Spacer(modifier = Modifier.height(100.dp))
+
             Text(text = "hi ", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
             Text(text = "hi")
 
+        }
+        Checkbox(checked = state, onCheckedChange = {
+            state = it
+        })
+        MyButton(text = "text") {
+            
         }
         Text(
 
@@ -72,7 +89,10 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         )
 
         Text(text = "Text")
-        Button(onClick = { text = "hello" }) {
+        Button(onClick = { if (state){
+            text = "true"
+        }
+        }) {
             Text(text = text)
         }
     }
