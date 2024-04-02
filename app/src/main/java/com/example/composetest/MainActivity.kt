@@ -86,7 +86,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             
         }
         Image(painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "description")
+            contentDescription = "description",modifier.clickable { text2 = "equal" })
         Text(
 
             text = text,
