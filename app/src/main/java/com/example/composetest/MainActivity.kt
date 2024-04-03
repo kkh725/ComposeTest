@@ -13,9 +13,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -56,56 +61,55 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+//리사이클러뷰 아이템 정의
 @Composable
-fun MyButton(text: String, onClick: () -> Unit) {
-    Button(onClick = onClick) {
-        Text(text)
+fun RowItems(item: Item){
+    Row (verticalAlignment = Alignment.CenterVertically){
+        Image(painter = painterResource(id = item.image), contentDescription = null)
+        Column (modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            ){
+            Text(
+                text = item.name,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = item.age.toString(),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = item.age.toString(),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+
     }
 }
+
+
 //컴포저블 함수 자체가 그냥 하나의 view혹은 레이아웃이라고 생각하면된다.
+
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    var text by remember { mutableStateOf(name) }
-    var state by remember { mutableStateOf(false) }
-    var text2 by remember {
-        mutableStateOf(name)
-    }
-    Column {
-        Row {
-            Text(text = text2, modifier.clickable { text2 = "rlahfld" },
-                color = Color.Red, fontSize = 25.sp)
-
-            Text(text = "hi ", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
-            Text(text = "hi")
-
-        }
-        Checkbox(checked = state, onCheckedChange = {
-            state = it
-        })
-        MyButton(text = "text") {
-            
-        }
-        Image(painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "description",modifier.clickable { text2 = "equal" })
-        Text(
-
-            text = text,
-        )
-
-        Text(text = "Text")
-        Button(onClick = { if (state){
-            text = "true"
-        }
-        }) {
-            Text(text = text)
-        }
-    }
+Text(text = name)
 
 }
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 320)
 @Composable
 fun GreetingPreview() { //매게변수를 사용하지않아야한다.
     ComposeTestTheme {
-        Greeting(name = "Android")
+        val list1: List<Item> = listOf(
+            Item("kim", 1, R.drawable.ic_launcher_foreground),
+            Item("kim", 1, R.drawable.ic_launcher_foreground),
+            Item("kim", 1, R.drawable.ic_launcher_foreground)
+        )
+        Column {
+            Greeting(name = "Android")
+            RowItems(item =Item("kim", 1, R.drawable.ic_launcher_foreground))
+        }
+
     }
 }
