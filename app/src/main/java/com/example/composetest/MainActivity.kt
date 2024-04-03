@@ -61,6 +61,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+@Composable
+fun makeRecyclerView(list : List<Item>){
+    LazyColumn {
+        items(list) { item ->
+            RowItems(item = item)
+        }
+    }
+}
 //리사이클러뷰 아이템 정의
 @Composable
 fun RowItems(item: Item){
@@ -109,6 +117,7 @@ fun GreetingPreview() { //매게변수를 사용하지않아야한다.
         Column {
             Greeting(name = "Android")
             RowItems(item =Item("kim", 1, R.drawable.ic_launcher_foreground))
+            makeRecyclerView(list1)
         }
 
     }
