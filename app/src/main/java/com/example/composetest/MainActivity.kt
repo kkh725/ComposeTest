@@ -6,18 +6,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -25,17 +28,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import com.example.composetest.ui.theme.ComposeTestTheme
 import androidx.navigation.compose.rememberNavController
 
@@ -80,7 +81,7 @@ class MainActivity : ComponentActivity() {
 
 }
 @Composable
-fun MakeRecyclerView(list : List<Item>){
+fun MakeRecyclerView(list : List<Item>,modifier: Modifier=Modifier){
     LazyColumn {
         items(list) { item ->
             RowItems(item = item)
@@ -114,7 +115,8 @@ fun RowItems(item: Item){
                     onClick = {
                         // FAB를 클릭했을 때 수행할 동작을 여기에 작성합니다.
                     },
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .padding(16.dp)
                         .size(56.dp) // 크기를 여기서 조정합니다.
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
@@ -135,34 +137,71 @@ fun RowItemsPreview(){
 //컴포저블 함수 자체가 그냥 하나의 view혹은 레이아웃이라고 생각하면된다.
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier, navController: NavController) {
+fun Greeting(name: String, modifier: Modifier = Modifier,viewModel: MyViewModel = MyViewModel()) {
+
+    val mydata = viewModel.myData.observeAsState()
+
     Column(modifier.fillMaxWidth()) {
         Text(text = name, color = Color.White)
         Button(
-            onClick = { navController.navigate("screen4") },
+            onClick = { viewModel.updateData("String") },
             modifier = Modifier
                 .fillMaxWidth()
                 .size(50.dp)
         ) {
-            Text(text = "click!")
+            Text(text = mydata.value.toString())
         }
         Text(text = name)
     }
 }
 
-@Preview()
+
+@Preview
 @Composable
 fun GreetingPreview() {
     ComposeTestTheme {
         val list1: List<Item> = listOf(
             Item("kim", 1, R.drawable.ic_launcher_foreground),
             Item("kim", 1, R.drawable.ic_launcher_foreground),
+            Item("kim", 1, R.drawable.ic_launcher_foreground),
+            Item("kim", 1, R.drawable.ic_launcher_foreground),
+            Item("kim", 1, R.drawable.ic_launcher_foreground),
             Item("kim", 1, R.drawable.ic_launcher_foreground)
         )
-        Column(modifier = Modifier.fillMaxSize()) {
-            Greeting(name = "android", modifier = Modifier, navController = rememberNavController())
-            MakeRecyclerView(list1)
-            MakeRecyclerView(list1)
+        Scaffold(
+            bottomBar = {
+                BottomAppBar {
+                    Text(text = "hi")
+                }
+            },
+            
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        // FAB 클릭 시 수행할 동작
+                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add")
+                }
+            }
+        )
+        {
+            LazyColumn(modifier = Modifier) {
+                item {
+                    Greeting(name = "android")
+                }
+
+                items(list1) { item ->
+                    RowItems(item = item)
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(100.dp)) // Footer를 공간 확보
+                }
+            }
         }
     }
 }
+

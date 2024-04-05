@@ -36,7 +36,7 @@ class NavTest : AppCompatActivity() {
 
                 }
                 composable("screen3") {
-                    Greeting("kkh3", modifier = Modifier, navController)
+                    Greeting("kkh3", modifier = Modifier)
                 }
             }
 
