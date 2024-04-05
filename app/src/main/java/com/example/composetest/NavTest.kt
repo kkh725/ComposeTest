@@ -5,11 +5,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
@@ -30,7 +32,7 @@ class NavTest : AppCompatActivity() {
                     Page1(navController)
                 }
                 composable("screen2") {
-                    prevGreeting()
+                    Page1(navController)
 
                 }
                 composable("screen3") {
@@ -44,11 +46,12 @@ class NavTest : AppCompatActivity() {
 
     @Composable
     fun Page1(navController: NavController) {
-        Column {
-            Text(text = "hihi")
+        Column(modifier = Modifier.padding(top = 24.dp)) {
             Button(onClick = { navController.navigate("screen2") }) {
                 Text(text = "btn1")
             }
+            Text(text = "hihi")
+
         }
     }
 

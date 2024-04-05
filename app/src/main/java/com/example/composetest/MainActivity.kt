@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,37 +46,41 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
-            val navController = rememberNavController()
-
-            NavHost(navController = navController, startDestination = "screen1") {
-                composable("screen1") {
-                    Greeting("kkh1", modifier = Modifier,navController)
-                }
-                composable("screen2") {
-                    Greeting("kkh2", modifier = Modifier,navController)
-                }
-                composable("screen3") {
-                    Greeting("kkh3", modifier = Modifier,navController)
-                }
-                composable("screen4"){
-                    GreetingPreview()
-                }
-            }
+//
+//            val navController = rememberNavController()
+//
+//            NavHost(navController = navController, startDestination = "screen1") {
+//                composable("screen1") {
+//                    Greeting("kkh1", modifier = Modifier,navController)
+//                }
+//                composable("screen2") {
+//                    Greeting("kkh2", modifier = Modifier,navController)
+//                }
+//                composable("screen3") {
+//                    Greeting("kkh3", modifier = Modifier,navController)
+//                }
+//                composable("screen4"){
+//                    GreetingPreview()
+//                }
+//            }
 
             ComposeTestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column (modifier = Modifier.padding(innerPadding)){
-                        Greeting("kkh1", modifier = Modifier,navController)
+                        GreetingPreview()
 
                     }
                 }
             }
         }
     }
+
+
+
+
 }
 @Composable
-fun makeRecyclerView(list : List<Item>){
+fun MakeRecyclerView(list : List<Item>){
     LazyColumn {
         items(list) { item ->
             RowItems(item = item)
@@ -82,29 +91,34 @@ fun makeRecyclerView(list : List<Item>){
 @Composable
 fun RowItems(item: Item){
     Surface(color = Color.Red, shadowElevation = 30.dp, modifier = Modifier.padding(3.dp)) {
-        Row (verticalAlignment = Alignment.CenterVertically){
+        Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {  }){
             Image(painter = painterResource(id = item.image), contentDescription = null)
             Column (modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
                 Text(
                     text = item.name,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,5.dp))
-                Text(
-                    modifier = Modifier.clickable {  },
-                    text = item.age.toString(),
-                    textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,5.dp))
                 Text(
                     text = item.age.toString(),
-                    textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                 )
+                Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,5.dp))
+                Text(
+                    text = item.age.toString(),
+                    fontWeight = FontWeight.Bold,
+                )
+                FloatingActionButton(
+                    onClick = {
+                        // FAB를 클릭했을 때 수행할 동작을 여기에 작성합니다.
+                    },
+                    modifier = Modifier.padding(16.dp)
+                        .size(56.dp) // 크기를 여기서 조정합니다.
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add")
+                }
             }
 
         }
@@ -123,7 +137,7 @@ fun RowItemsPreview(){
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier, navController: NavController) {
     Column(modifier.fillMaxWidth()) {
-        Text(text = name)
+        Text(text = name, color = Color.White)
         Button(
             onClick = { navController.navigate("screen4") },
             modifier = Modifier
@@ -136,7 +150,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier, navController: NavCont
     }
 }
 
-@Preview
+@Preview()
 @Composable
 fun GreetingPreview() {
     ComposeTestTheme {
@@ -147,7 +161,8 @@ fun GreetingPreview() {
         )
         Column(modifier = Modifier.fillMaxSize()) {
             Greeting(name = "android", modifier = Modifier, navController = rememberNavController())
-            makeRecyclerView(list1)
+            MakeRecyclerView(list1)
+            MakeRecyclerView(list1)
         }
     }
 }
