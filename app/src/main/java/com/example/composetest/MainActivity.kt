@@ -1,10 +1,12 @@
 package com.example.composetest
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,22 +23,32 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,23 +63,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-//
-//            val navController = rememberNavController()
-//
-//            NavHost(navController = navController, startDestination = "screen1") {
-//                composable("screen1") {
-//                    Greeting("kkh1", modifier = Modifier,navController)
-//                }
-//                composable("screen2") {
-//                    Greeting("kkh2", modifier = Modifier,navController)
-//                }
-//                composable("screen3") {
-//                    Greeting("kkh3", modifier = Modifier,navController)
-//                }
-//                composable("screen4"){
-//                    GreetingPreview()
-//                }
-//            }
 
             ComposeTestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -135,6 +130,8 @@ fun RowItems(item: Item){
 @Composable
 fun RowItemsPreview(){
     RowItems(item = Item("kim", 1, R.drawable.ic_launcher_foreground))
+
+
 }
 
 
@@ -161,6 +158,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier,viewModel: MyViewModel 
 
 
 @Preview
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GreetingPreview() {
     ComposeTestTheme {
@@ -172,45 +170,41 @@ fun GreetingPreview() {
             Item("kim", 1, R.drawable.ic_launcher_foreground),
             Item("kim", 1, R.drawable.ic_launcher_foreground)
         )
+
+
         Scaffold(
             bottomBar = {
                 BottomAppBar {
-                    Text(text = "hidddd", color = Color.Red, fontSize = 35.sp)
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Button(onClick = { /*TODO*/ }) {
 
-                        
-                    }
                 }
             },
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "Top Bar") },
+                    colors = TopAppBarDefaults.topAppBarColors(Yellow),
+                    navigationIcon = { Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", modifier = Modifier.clickable {  })},
+                    actions = {
+                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        Icon(Icons.Default.Add, contentDescription = "Search")
+                    }
+                )
 
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        // FAB 클릭 시 수행할 동작
-                    },
-                    modifier = Modifier
-                        .padding(16.dp)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add")
-                }
+            },
+            floatingActionButton = FloatingActionButton(onClick = { /*TODO*/ }) {
+                
             }
+
         )
         {
-            LazyColumn(modifier = Modifier) {
-                item {
-                    Greeting(name = "android")
-                }
-
-                items(list1) { item ->
-                    RowItems(item = item)
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(100.dp)) // Footer를 공간 확보
-                }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                Text(text = "hi", color = Color.Black)
             }
         }
+
     }
 }
 
