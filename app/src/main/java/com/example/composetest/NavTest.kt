@@ -36,7 +36,6 @@ class NavTest : AppCompatActivity() {
 
                 }
                 composable("screen3") {
-                    Greeting("kkh3", modifier = Modifier)
                 }
             }
 
@@ -46,13 +45,7 @@ class NavTest : AppCompatActivity() {
 
     @Composable
     fun Page1(navController: NavController) {
-        Column(modifier = Modifier.padding(top = 24.dp)) {
-            Button(onClick = { navController.navigate("screen2") }) {
-                Text(text = "btn1")
-            }
-            Text(text = "hihi")
-
-        }
+            Button(onClick = { navController.navigate("screen2") }){}
     }
 
     @Composable

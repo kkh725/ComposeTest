@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -25,7 +26,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
@@ -35,6 +39,9 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -54,6 +61,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.composetest.ui.theme.ComposeTestTheme
 import androidx.navigation.compose.rememberNavController
 
@@ -112,6 +120,7 @@ fun RowItems(item: Item){
                     fontWeight = FontWeight.Bold,
                 )
                 FloatingActionButton(
+                    containerColor = Color.White,
                     onClick = {
                         // FAB를 클릭했을 때 수행할 동작을 여기에 작성합니다.
                     },
@@ -127,36 +136,50 @@ fun RowItems(item: Item){
     }
 
 }
-@Preview
-@Composable
-fun RowItemsPreview(){
-    RowItems(item = Item("kim", 1, R.drawable.ic_launcher_foreground))
-
-
-}
-
-
-//컴포저블 함수 자체가 그냥 하나의 view혹은 레이아웃이라고 생각하면된다.
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier,viewModel: MyViewModel = MyViewModel()) {
+fun BottomNavigationBar(modifier: Modifier=Modifier
+){
+    val colors = NavigationBarItemDefaults.colors(
+        unselectedIconColor = Color.Gray, // 선택되지 않은 아이템의 색상
+        selectedIconColor = Color.Blue,   // 선택된 아이템의 색상
+        disabledIconColor = Color.Red     // 비활성화된 아이템의 색상
+    )
+    NavigationBar(modifier.fillMaxWidth(), containerColor = Color.White, contentColor = Color.Red, tonalElevation = 100.dp) {
+        NavigationBarItem(selected = false,
+            onClick = { /*TODO*/ },
+            icon = { Icon(imageVector = Icons.Default.Add,
+                modifier = Modifier.size(30.dp),
+                contentDescription = "home",
+                tint = Color.Red)
+            },
+            colors = colors,
+            label = { Text(text = "Home") }
+        )
+        NavigationBarItem(selected = true,
+            onClick = { /*TODO*/ },
+            icon = { Icon(imageVector = Icons.Default.Home,
+                contentDescription = "home",
+                tint = Color.Red)
+            }
+        )
+        NavigationBarItem(selected = true,
+            onClick = { /*TODO*/ },
+            icon = { Icon(imageVector = Icons.Default.Home,
+                contentDescription = "home",
+                tint = Color.Red)
+            },
 
-    val mydata = viewModel.myData.observeAsState()
+        )
 
-    Column(modifier.fillMaxWidth()) {
-        Text(text = name, color = Color.White)
-        Button(
-            onClick = { viewModel.updateData("String") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(50.dp)
-        ) {
-            Text(text = mydata.value.toString())
-        }
-        Text(text = name)
     }
 }
+@Preview
+@Composable
+fun PreviewBottomNavigationBar(){
+    BottomNavigationBar(modifier = Modifier)
 
+}
 
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
@@ -175,19 +198,18 @@ fun GreetingPreview() {
 
         Scaffold(
             bottomBar = {
-                BottomAppBar(containerColor = Color.Cyan) {
-                    //주로 네비게이션 바 composable로 만들어서 사용한다.
-                    Icon(Icons.Default.Search, contentDescription = "Search", modifier = Modifier.size(35.dp))
-                    Icon(Icons.Default.Search, contentDescription = "Search")
-                    Icon(Icons.Default.Search, contentDescription = "Search")
-                    Text(text = "hihi")
-                }
+               BottomNavigationBar(modifier = Modifier)
             },
             topBar = {
                 TopAppBar(
                     title = { Text(text = "Top Bar") },
                     colors = TopAppBarDefaults.topAppBarColors(Yellow),
-                    navigationIcon = { Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back", modifier = Modifier.clickable {  })},
+                    navigationIcon = {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            modifier = Modifier.clickable { })
+                    },
                     actions = {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                         Icon(Icons.Default.Add, contentDescription = "Search")
@@ -205,19 +227,18 @@ fun GreetingPreview() {
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
+            },
+            content = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                ) {
+                    MakeRecyclerView(list1)
+                }
             }
 
         )
-        {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            ) {
-                Text(text = "hi", color = Color.Black)
-            }
-        }
-
     }
 }
 
