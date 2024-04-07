@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -174,8 +175,12 @@ fun GreetingPreview() {
 
         Scaffold(
             bottomBar = {
-                BottomAppBar {
-
+                BottomAppBar(containerColor = Color.Cyan) {
+                    //주로 네비게이션 바 composable로 만들어서 사용한다.
+                    Icon(Icons.Default.Search, contentDescription = "Search", modifier = Modifier.size(35.dp))
+                    Icon(Icons.Default.Search, contentDescription = "Search")
+                    Icon(Icons.Default.Search, contentDescription = "Search")
+                    Text(text = "hihi")
                 }
             },
             topBar = {
@@ -190,8 +195,16 @@ fun GreetingPreview() {
                 )
 
             },
-            floatingActionButton = FloatingActionButton(onClick = { /*TODO*/ }) {
-                
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        // FAB를 클릭했을 때 수행할 동작을 여기에 작성합니다.
+                    },
+                    containerColor = Color.Red,
+                    contentColor = Color.White, // FAB 내부 아이콘의 색상 설정
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add")
+                }
             }
 
         )
