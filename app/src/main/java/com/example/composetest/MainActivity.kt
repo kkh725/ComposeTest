@@ -1,69 +1,48 @@
 package com.example.composetest
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.composetest.ui.theme.ComposeTestTheme
-import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
 
@@ -83,10 +62,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
-
-
 }
 @Composable
 fun MakeRecyclerView(list : List<Item>,modifier: Modifier=Modifier){
@@ -140,34 +115,40 @@ fun RowItems(item: Item){
 @Composable
 fun BottomNavigationBar(modifier: Modifier=Modifier
 ){
+    //하단 네비게이션바 컴포넌트 색 지정
     val colors = NavigationBarItemDefaults.colors(
-        unselectedIconColor = Color.Gray, // 선택되지 않은 아이템의 색상
-        selectedIconColor = Color.Blue,   // 선택된 아이템의 색상
-        disabledIconColor = Color.Red     // 비활성화된 아이템의 색상
+        selectedIconColor=Color(0xFF03dac5),
+        selectedTextColor = Color(0xFF03dac5),
+        indicatorColor = Color.Gray,
+        unselectedIconColor = Color.White,
+        unselectedTextColor = Color.White,
+        disabledIconColor = Color.Cyan,
+        disabledTextColor = Color.Cyan,
     )
-    NavigationBar(modifier.fillMaxWidth(), containerColor = Color.White, contentColor = Color.Red, tonalElevation = 100.dp) {
-        NavigationBarItem(selected = false,
-            onClick = { /*TODO*/ },
-            icon = { Icon(imageVector = Icons.Default.Add,
-                modifier = Modifier.size(30.dp),
-                contentDescription = "home",
-                tint = Color.Red)
+
+    var isSelected = remember { mutableStateOf(false) }
+
+    NavigationBar(modifier.fillMaxWidth(), containerColor = Color.Gray) {
+        NavigationBarItem(selected = isSelected.value,
+            onClick = { isSelected.value = !isSelected.value },
+            icon = { Icon(imageVector = Icons.Default.Home,
+                contentDescription = "home")
             },
             colors = colors,
-            label = { Text(text = "Home") }
+            label = { Text(text = "Home")},
+            alwaysShowLabel = false
         )
         NavigationBarItem(selected = true,
             onClick = { /*TODO*/ },
             icon = { Icon(imageVector = Icons.Default.Home,
-                contentDescription = "home",
-                tint = Color.Red)
+                contentDescription = "home",)
             }
+
         )
         NavigationBarItem(selected = true,
             onClick = { /*TODO*/ },
             icon = { Icon(imageVector = Icons.Default.Home,
-                contentDescription = "home",
-                tint = Color.Red)
+                contentDescription = "home",)
             },
 
         )
@@ -221,9 +202,7 @@ fun GreetingPreview() {
                 FloatingActionButton(
                     onClick = {
                         // FAB를 클릭했을 때 수행할 동작을 여기에 작성합니다.
-                    },
-                    containerColor = Color.Red,
-                    contentColor = Color.White, // FAB 내부 아이콘의 색상 설정
+                    }// FAB 내부 아이콘의 색상 설정
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
