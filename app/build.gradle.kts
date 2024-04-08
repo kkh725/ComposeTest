@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.constraintlayout.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -77,6 +78,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.5")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
     implementation("androidx.navigation:navigation-compose:$2.4.1")
 

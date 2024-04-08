@@ -9,6 +9,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -45,11 +46,11 @@ class NavTest : AppCompatActivity() {
     }
 
     @Composable
-    fun Page2(navController: NavController) {
+    fun Page2(navController: NavController,viewmodel:MyViewModel = viewModel<MyViewModel>()) {
         Column {
             Text(text = "hihi2")
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = "btn1")
+            Button(onClick = { viewmodel.updateData("hi") }) {
+                Text(text = viewmodel.myData.value)
             }
             Button(onClick = { /*TODO*/ }) {
                 Text(text = "btn1")
