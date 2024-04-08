@@ -1,5 +1,6 @@
 package com.example.composetest
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,6 +22,7 @@ class NavTest : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
 
+
             val navController = rememberNavController()
 
             NavHost(navController = navController, startDestination = "screen1") {
@@ -39,11 +41,11 @@ class NavTest : AppCompatActivity() {
     }
 }
 
-
     @Composable
     fun Page1(navController: NavController) {
             Button(onClick = { navController.navigate("screen2") }){}
     }
+
 
     @Composable
     fun Page2(navController: NavController,viewmodel:MyViewModel = viewModel<MyViewModel>()) {
@@ -68,7 +70,14 @@ class NavTest : AppCompatActivity() {
         }
     }
 
-    @Preview
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    name = "DefaultPreviewLight"
+)
     @Composable
     fun prevGreeting() {
         Page1(rememberNavController())

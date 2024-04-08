@@ -1,11 +1,13 @@
 package com.example.composetest
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,9 +34,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Yellow
@@ -56,7 +61,6 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column (modifier = Modifier.padding(innerPadding)){
                         GreetingPreview()
-
                     }
                 }
             }
@@ -74,7 +78,7 @@ fun MakeRecyclerView(list : List<Item>,modifier: Modifier=Modifier){
 //리사이클러뷰 아이템 정의
 @Composable
 fun RowItems(item: Item){
-    Surface(color = Color.Red, shadowElevation = 30.dp, modifier = Modifier.padding(3.dp)) {
+    Surface(color = Color.Gray, shadowElevation = 30.dp, modifier = Modifier.padding(3.dp)) {
         Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {  }){
             Image(painter = painterResource(id = item.image), contentDescription = null)
             Column (modifier = Modifier.weight(1f),
@@ -100,8 +104,8 @@ fun RowItems(item: Item){
                         // FAB를 클릭했을 때 수행할 동작을 여기에 작성합니다.
                     },
                     modifier = Modifier
-                            .padding(16.dp)
-                            .size(56.dp) // 크기를 여기서 조정합니다.
+                        .padding(16.dp)
+                        .size(56.dp) // 크기를 여기서 조정합니다.
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
@@ -162,8 +166,15 @@ fun PreviewBottomNavigationBar(){
 
 }
 
-@Preview
-@OptIn(ExperimentalMaterial3Api::class)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    name = "DefaultPreviewLight"
+)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun GreetingPreview() {
     ComposeTestTheme {
@@ -175,7 +186,7 @@ fun GreetingPreview() {
             Item("kim", 1, R.drawable.ic_launcher_foreground),
             Item("kim", 1, R.drawable.ic_launcher_foreground)
         )
-
+        var isClicked by remember { mutableStateOf(false) }
 
         Scaffold(
             bottomBar = {
@@ -201,7 +212,7 @@ fun GreetingPreview() {
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        // FAB를 클릭했을 때 수행할 동작을 여기에 작성합니다.
+                        isClicked = !isClicked
                     }// FAB 내부 아이콘의 색상 설정
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
@@ -210,14 +221,23 @@ fun GreetingPreview() {
             content = {
                 Column(
                     modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it)
+                        .fillMaxSize()
+                        .padding(it)
                 ) {
                     MakeRecyclerView(list1)
                 }
             }
-
         )
+        if (!isClicked){
+
+            Box(modifier = Modifier.fillMaxSize().padding(bottom = 200.dp),
+                contentAlignment = Alignment.BottomEnd,
+                content = { Text(text = "String !! clicked !!")}
+            )
+        }
+
     }
 }
+
+
 
