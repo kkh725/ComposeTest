@@ -100,8 +100,8 @@ fun RowItems(item: Item){
                         // FAB를 클릭했을 때 수행할 동작을 여기에 작성합니다.
                     },
                     modifier = Modifier
-                        .padding(16.dp)
-                        .size(56.dp) // 크기를 여기서 조정합니다.
+                            .padding(16.dp)
+                            .size(56.dp) // 크기를 여기서 조정합니다.
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
@@ -136,7 +136,7 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
             },
             colors = colors,
             label = { Text(text = "Home")},
-            alwaysShowLabel = false
+            alwaysShowLabel = false //클릭 시 라벨이 표시되게.
         )
         NavigationBarItem(selected = true,
             onClick = { /*TODO*/ },
@@ -210,8 +210,8 @@ fun GreetingPreview() {
             content = {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(it)
+                            .fillMaxSize()
+                            .padding(it)
                 ) {
                     MakeRecyclerView(list1)
                 }
