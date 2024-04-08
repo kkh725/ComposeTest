@@ -78,7 +78,7 @@ fun MakeRecyclerView(list : List<Item>,modifier: Modifier=Modifier){
 //리사이클러뷰 아이템 정의
 @Composable
 fun RowItems(item: Item){
-    Surface(color = Color.Gray, shadowElevation = 30.dp, modifier = Modifier.padding(3.dp)) {
+    Surface(color = Color.DarkGray, shadowElevation = 30.dp, modifier = Modifier.padding(3.dp)) {
         Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {  }){
             Image(painter = painterResource(id = item.image), contentDescription = null)
             Column (modifier = Modifier.weight(1f),
