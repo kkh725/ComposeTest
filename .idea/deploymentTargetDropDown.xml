@@ -11,10 +11,10 @@
       <entry key="Myapp">
         <State />
       </entry>
-      <entry key="app">
+      <entry key="PrevGreeting">
         <State />
       </entry>
-      <entry key="prevGreeting">
+      <entry key="app">
         <State />
       </entry>
     </value>

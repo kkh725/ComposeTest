@@ -5,11 +5,19 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -43,7 +51,9 @@ class NavTest : AppCompatActivity() {
 
     @Composable
     fun Page1(navController: NavController) {
-            Button(onClick = { navController.navigate("screen2") }){}
+            Button(onClick = {
+                navController.navigate("screen2")
+            }){}
     }
 
 
@@ -78,7 +88,14 @@ class NavTest : AppCompatActivity() {
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     name = "DefaultPreviewLight"
 )
-    @Composable
-    fun prevGreeting() {
-        Page1(rememberNavController())
-    }
+@Composable
+fun PrevGreeting() {
+        val viewModel = viewModel<MyViewModel>()
+        val countState = viewModel.countFlow.collectAsState(initial = 0)
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)){
+            Page1(rememberNavController())
+            Text(text = "${countState.value}", fontSize = 70.sp, modifier = Modifier.align(Alignment.Center))
+        }
+}
