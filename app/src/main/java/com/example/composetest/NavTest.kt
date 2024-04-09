@@ -14,6 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -91,21 +95,28 @@ class NavTest : AppCompatActivity() {
 )
 @Composable
 fun PrevGreeting() {
+        var isClicked by remember { mutableStateOf(false) }
         val viewModel = viewModel<MyViewModel>()
-        val countState = viewModel.countFlow.collectAsState(initial = 0)
+        val countState by viewModel.countFlow.collectAsState(initial = 0)
+
         Box(modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White)){
             Page1(rememberNavController())
-            Text(text = "${countState.value}", fontSize = 70.sp, modifier = Modifier.align(Alignment.Center))
+            Text(text = countState.toString(), fontSize = 70.sp, modifier = Modifier.align(Alignment.Center))
         }
+
     Column {
+
         TextField(value = viewModel.myData.value, onValueChange = { newValue ->
             // 값을 변경할 때마다 State 업데이트
             viewModel.updateData(newValue)
 
         })
-        Text(text = viewModel.myData.value)
+        Button(onClick = { isClicked = !isClicked }) {
+            
+        }
+        if (isClicked)Text(text = viewModel.myData.value)
     }
 
 }
