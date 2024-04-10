@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.composetest.ui.theme.ComposeTestTheme
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.system.measureTimeMillis
@@ -63,20 +64,26 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         suspend fun test1() : String{
+            val time = measureTimeMillis {
                 delay(3000)
-                return "result1"
+            }
+                return time.toString()
         }
         suspend fun test2() : String{
+            val time = measureTimeMillis {
                 delay(3000)
-                return "result2"
-
+            }
+            return time.toString()
             }
         lifecycleScope.launch (Dispatchers.IO) {
             val time = measureTimeMillis {
-                test1()
-                test2()
+                val test1 = async(Dispatchers.IO) { test1() }
+                val test2 = async(Dispatchers.Main) { test2() }
+                Log.d("TAG", "async 동작하는 시간 : ${test1.await()}")
+                Log.d("TAG", "async 동작하는 시간 : ${test2.await()}")
+
             }
-            Log.d("TAG", "async 없이 동작하는 시간 : $time")
+            Log.d("TAG", "async로 병렬 실행 시간 : $time")
 
         }
 
