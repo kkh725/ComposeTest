@@ -261,6 +261,7 @@ fun GreetingPreview() {
                 FloatingActionButton(
                     onClick = {
                         isClicked = !isClicked
+                        Log.d("floating",isClicked.toString())
                     }// FAB 내부 아이콘의 색상 설정
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
