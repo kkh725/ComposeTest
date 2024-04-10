@@ -3,6 +3,7 @@ package com.example.composetest
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -32,5 +33,7 @@ class MyViewModel : ViewModel() {
     // 데이터 변경 함수
     fun updateData(newData: String) {
         _myData.value = newData
+        viewModelScope
+
     }
 }

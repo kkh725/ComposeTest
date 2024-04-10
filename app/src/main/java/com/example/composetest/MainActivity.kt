@@ -113,8 +113,12 @@ fun MakeRecyclerView(list : List<Item>,modifier: Modifier=Modifier){
 //리사이클러뷰 아이템 정의
 @Composable
 fun RowItems(item: Item){
-    Surface(color = Color.DarkGray, shadowElevation = 30.dp, modifier = Modifier.padding(3.dp)) {
-        Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {  }){
+    Surface(
+        color = Color.DarkGray,
+        shadowElevation = 30.dp,
+        modifier = Modifier.padding(3.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { }){
             Image(painter = painterResource(id = item.image), contentDescription = null)
             Column (modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -156,18 +160,21 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
 ){
     //하단 네비게이션바 컴포넌트 색 지정
     val colors = NavigationBarItemDefaults.colors(
-        selectedIconColor=Color(0xFF03dac5),
+        selectedIconColor = Color(0xFF03dac5),
         selectedTextColor = Color(0xFF03dac5),
         indicatorColor = Color.Gray,
         unselectedIconColor = Color.White,
         unselectedTextColor = Color.White,
         disabledIconColor = Color.Cyan,
-        disabledTextColor = Color.Cyan,
+        disabledTextColor = Color.Cyan
     )
 
     var isSelected = remember { mutableStateOf(false) }
 
-    NavigationBar(modifier.fillMaxWidth(), containerColor = Color.Gray) {
+    NavigationBar(
+        modifier.fillMaxWidth(),
+        containerColor = Color.Gray
+    ) {
         NavigationBarItem(selected = isSelected.value,
             onClick = { isSelected.value = !isSelected.value },
             icon = { Icon(imageVector = Icons.Default.Home, modifier = Modifier.size(25.dp),
@@ -238,8 +245,14 @@ fun GreetingPreview() {
                             modifier = Modifier.clickable { })
                     },
                     actions = {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
-                        Icon(Icons.Default.Add, contentDescription = "Search")
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = "Search"
+                        )
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Search"
+                        )
                     }
                 )
 
@@ -264,7 +277,6 @@ fun GreetingPreview() {
             }
         )
         if (!isClicked){
-
             Box(modifier = Modifier.fillMaxSize().padding(bottom = 200.dp),
                 contentAlignment = Alignment.BottomEnd,
                 content = { Text(text = "String !! clicked !!")}
