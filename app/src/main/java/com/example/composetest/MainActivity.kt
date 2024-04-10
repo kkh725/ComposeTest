@@ -53,6 +53,7 @@ import com.example.composetest.ui.theme.ComposeTestTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
 
 class MainActivity : ComponentActivity() {
 
@@ -61,16 +62,24 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // 메인 스레드에서 코루틴 실행
-        lifecycleScope.launch(Dispatchers.Main) {
-            delay(5000)
-            Log.d("메인 스레드", Thread.currentThread().name)
+        suspend fun test1() : String{
+                delay(3000)
+                return "result1"
+        }
+        suspend fun test2() : String{
+                delay(3000)
+                return "result2"
+
+            }
+        lifecycleScope.launch (Dispatchers.IO) {
+            val time = measureTimeMillis {
+                test1()
+                test2()
+            }
+            Log.d("TAG", "async 없이 동작하는 시간 : $time")
+
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            delay(5000)
-            Log.d("IO 스레드", Thread.currentThread().name)
-        }
 
 
         setContent {
