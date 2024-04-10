@@ -63,18 +63,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        suspend fun test1() : String{
-            val time = measureTimeMillis {
-                delay(3000)
-            }
-                return time.toString()
-        }
-        suspend fun test2() : String{
-            val time = measureTimeMillis {
-                delay(3000)
-            }
-            return time.toString()
-            }
+        suspend fun test1() : String{ return measureTimeMillis { delay(3000) }.toString() }
+        suspend fun test2() : String{ return measureTimeMillis { delay(3000) }.toString() }
+
         lifecycleScope.launch (Dispatchers.IO) {
             val time = measureTimeMillis {
                 val test1 = async(Dispatchers.IO) { test1() }
