@@ -77,10 +77,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
 
+    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation ("com.squareup.retrofit2:converter-moshi:2.11.0")
+    implementation ("com.squareup.moshi:moshi-kotlin:1.15.1")
 
+    
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.5")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
-    implementation("androidx.navigation:navigation-compose:$2.4.1")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
 }
