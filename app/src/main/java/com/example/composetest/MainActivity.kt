@@ -2,6 +2,7 @@ package com.example.composetest
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -47,19 +48,50 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.example.composetest.ui.theme.ComposeTestTheme
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import kotlin.system.measureTimeMillis
 
 interface JsonPlaceHolderApi{
     @GET("/todos")
-    fun getTodos():
+    suspend fun getTodos():List<JsonPlaceHolderApiItem>
 }
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
 
+        val api = Retrofit
+            .Builder()
+            .baseUrl("https://jsonplaceholder.typicode.com")
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(JsonPlaceHolderApi::class.java)
+
+        lifecycleScope.launch { //레트로핏 자체에서 withContext를 활용해 io 디스패처로 진입함.
+            val time = measureTimeMillis {
+//                api.getTodos()
+//                api.getTodos()
+
+                val todos = async { api.getTodos() }
+                val todos2 = async { api.getTodos() }
+                todos.await()
+                todos2.await()
+            }
+            Log.d("api 호출 시간","time : $time")
+
+        }
 
         setContent {
 
@@ -138,7 +170,7 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
     NavigationBar(modifier.fillMaxWidth(), containerColor = Color.Gray) {
         NavigationBarItem(selected = isSelected.value,
             onClick = { isSelected.value = !isSelected.value },
-            icon = { Icon(imageVector = Icons.Default.Home,
+            icon = { Icon(imageVector = Icons.Default.Home, modifier = Modifier.size(25.dp),
                 contentDescription = "home")
             },
             colors = colors,
