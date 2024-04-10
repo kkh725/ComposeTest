@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.composetest.ui.theme.ComposeTestTheme
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -60,16 +61,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        Log.d("스레드 이름",Thread.currentThread().name)
-        lifecycleScope.launch(Dispatchers.IO) {
-            Log.d("스레드 이름",Thread.currentThread().name)
-        }
-        lifecycleScope.launch(Dispatchers.Default) {
-            Log.d("스레드 이름",Thread.currentThread().name)
-        }
+        // 메인 스레드에서 코루틴 실행
         lifecycleScope.launch(Dispatchers.Main) {
-            Log.d("스레드 이름",Thread.currentThread().name)
+            delay(5000)
+            Log.d("메인 스레드", Thread.currentThread().name)
         }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(5000)
+            Log.d("IO 스레드", Thread.currentThread().name)
+        }
+
+
         setContent {
 
                         GreetingPreview()
