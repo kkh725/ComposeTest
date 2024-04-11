@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -177,9 +178,11 @@ fun RowItems(item: Item){
 
 }
 
+
 @Composable
 fun BottomNavigationBar(modifier: Modifier=Modifier
 ){
+
     //하단 네비게이션바 컴포넌트 색 지정
     val colors = NavigationBarItemDefaults.colors(
         selectedIconColor = Color(0xFF03dac5),
@@ -191,34 +194,38 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
         disabledTextColor = Color.Cyan
     )
 
-
-    var isSelected = remember { mutableStateOf(false) }
+    var tabPage  by remember { mutableStateOf("home") }
 
     NavigationBar(
         modifier.fillMaxWidth(),
         containerColor = Color.Gray
     ) {
-        NavigationBarItem(selected = isSelected.value,
-            onClick = { isSelected.value = !isSelected.value },
+        NavigationBarItem(selected = tabPage == "home",
+            onClick = { tabPage = "home"
+                      //보통 navigate
+                },
             icon = { Icon(imageVector = Icons.Default.Home, modifier = Modifier.size(25.dp),
                 contentDescription = "home")
             },
             colors = colors,
-            label = { Text(text = "Home")},
-            alwaysShowLabel = false //클릭 시 라벨이 표시되게.
+            label = { if (tabPage == "home") Text(text = "Home")}
         )
-        NavigationBarItem(selected = true,
-            onClick = { /*TODO*/ },
-            icon = { Icon(imageVector = Icons.Default.Home,
-                contentDescription = "home",)
-            }
+        NavigationBarItem(selected = tabPage == "edit",
+            onClick = { tabPage = "edit"},
+            icon = { Icon(imageVector = Icons.Default.Edit,
+                contentDescription = "edit",)
+            } ,
+            colors = colors,
+            label = { if (tabPage == "edit") Text(text = "edit")}
 
         )
-        NavigationBarItem(selected = true,
-            onClick = { /*TODO*/ },
-            icon = { Icon(imageVector = Icons.Default.Home,
-                contentDescription = "home",)
-            },
+        NavigationBarItem(selected = tabPage == "edit2",
+            onClick = { tabPage = "edit2"},
+            icon = { Icon(imageVector = Icons.Default.Edit,
+                contentDescription = "edit2",)
+            } ,
+            colors = colors,
+            label = { if (tabPage == "edit2") Text(text = "edit")}
 
         )
 
