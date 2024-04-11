@@ -158,7 +158,9 @@ fun pre(){
         Column (modifier = Modifier.padding(it)){
             if (showBottomSheet) {
                 ModalBottomSheet(
-                    modifier = Modifier.fillMaxWidth().size(200.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(200.dp),
                     onDismissRequest = {
                         showBottomSheet = false
                     },
