@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -123,9 +124,10 @@ fun ItemPreview(){
 fun RowItems(item: Item){
 
     var isTest by remember { mutableStateOf(false) }
+    val color by animateColorAsState(targetValue = if (isTest) Color.White else Color.Gray, label = "")
 
     Surface(
-        color = Color.DarkGray,
+        color = color,
         shadowElevation = 30.dp,
         modifier = Modifier.padding(3.dp)
     ) {
