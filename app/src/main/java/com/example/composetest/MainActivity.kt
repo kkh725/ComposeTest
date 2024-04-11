@@ -18,16 +18,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -49,7 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -116,10 +112,12 @@ fun RowItems(item: Item){
     var isTest by remember { mutableStateOf(false) }
     val color by animateColorAsState(targetValue = if (isTest) Color.White else Color.Gray, label = "")
 
+
     Surface(
         color = color,
         shadowElevation = 30.dp,
-        modifier = Modifier.padding(3.dp)
+        modifier = Modifier.padding(3.dp),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.animateContentSize()) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { }){
@@ -248,7 +246,7 @@ fun GreetingPreview() {
                 TopAppBar(
                     modifier = Modifier.fillMaxWidth(),
                     title = { Text(text = "Top Bar") },
-                    colors = TopAppBarDefaults.topAppBarColors(Color.White),
+                    colors = TopAppBarDefaults.topAppBarColors(Color.Gray),
                     navigationIcon = {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -284,6 +282,7 @@ fun GreetingPreview() {
                         .fillMaxSize()
                         .padding(it)
                 ) {
+                    Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,2.5.dp))
                     LazyColumn {
                         items(list1) { item ->
                             RowItems(item = item)
