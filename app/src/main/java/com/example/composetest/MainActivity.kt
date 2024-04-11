@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -239,6 +240,7 @@ fun GreetingPreview() {
         var isClicked by remember { mutableStateOf(false) }
 
         Scaffold(
+            floatingActionButtonPosition = FabPosition.Center,
             bottomBar = {
                BottomNavigationBar(modifier = Modifier)
             },
@@ -272,6 +274,7 @@ fun GreetingPreview() {
                         isClicked = !isClicked
                         Log.d("floating",isClicked.toString())
                     }// FAB 내부 아이콘의 색상 설정
+
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
@@ -288,7 +291,9 @@ fun GreetingPreview() {
                             RowItems(item = item)
                         }
                     }
+
                 }
+
             }
         )
         if (!isClicked){
