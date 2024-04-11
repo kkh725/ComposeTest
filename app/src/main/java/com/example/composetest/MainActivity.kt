@@ -107,19 +107,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-@Composable
-fun MakeRecyclerView(list : List<Item>,modifier: Modifier=Modifier){
-    LazyColumn {
-        items(list) { item ->
-            RowItems(item = item)
-        }
-    }
-}
-@Preview
-@Composable
-fun ItemPreview(){
-    RowItems(item = Item("kim", 1, R.drawable.ic_launcher_foreground))
-}
+
 //리사이클러뷰 아이템 정의
 @Composable
 fun RowItems(item: Item){
@@ -194,43 +182,34 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
         disabledTextColor = Color.Cyan
     )
 
+    val navigationBarItems : List<BottomNavItem> = listOf(
+        BottomNavItem.HOME,
+        BottomNavItem.EDIT,
+        BottomNavItem.BUILD,
+        BottomNavItem.FAVORITE,
+        BottomNavItem.ACCOUNTBOX
+    )
+
     var tabPage  by remember { mutableStateOf("home") }
 
     NavigationBar(
         modifier.fillMaxWidth(),
         containerColor = Color.Gray
     ) {
-        NavigationBarItem(selected = tabPage == "home",
-            onClick = { tabPage = "home"
-                      //보통 navigate
-                },
-            icon = { Icon(imageVector = Icons.Default.Home, modifier = Modifier.size(25.dp),
-                contentDescription = "home")
-            },
-            colors = colors,
-            label = { if (tabPage == "home") Text(text = "Home")}
-        )
-        NavigationBarItem(selected = tabPage == "edit",
-            onClick = { tabPage = "edit"},
-            icon = { Icon(imageVector = Icons.Default.Edit,
-                contentDescription = "edit",)
-            } ,
-            colors = colors,
-            label = { if (tabPage == "edit") Text(text = "edit")}
+        navigationBarItems.forEach{ item->
+            NavigationBarItem(
+                selected = tabPage == item.title,
+                onClick = { tabPage = item.title },
+                icon = { Icon(imageVector = item.icon, contentDescription = item.screenRoute) },
+                colors = colors,
+                label = { if (tabPage == item.title) Text(text = item.screenRoute)}
+            )
+        }
 
-        )
-        NavigationBarItem(selected = tabPage == "edit2",
-            onClick = { tabPage = "edit2"},
-            icon = { Icon(imageVector = Icons.Default.Edit,
-                contentDescription = "edit2",)
-            } ,
-            colors = colors,
-            label = { if (tabPage == "edit2") Text(text = "edit")}
 
-        )
-
-    }
+  }
 }
+
 @Preview
 @Composable
 fun PreviewBottomNavigationBar(){
@@ -303,7 +282,11 @@ fun GreetingPreview() {
                         .fillMaxSize()
                         .padding(it)
                 ) {
-                    MakeRecyclerView(list1)
+                    LazyColumn {
+                        items(list1) { item ->
+                            RowItems(item = item)
+                        }
+                    }
                 }
             }
         )
