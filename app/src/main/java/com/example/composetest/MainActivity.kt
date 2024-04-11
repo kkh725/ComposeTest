@@ -6,6 +6,9 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -110,47 +113,64 @@ fun MakeRecyclerView(list : List<Item>,modifier: Modifier=Modifier){
         }
     }
 }
+@Preview
+@Composable
+fun ItemPreview(){
+    RowItems(item = Item("kim", 1, R.drawable.ic_launcher_foreground))
+}
 //리사이클러뷰 아이템 정의
 @Composable
 fun RowItems(item: Item){
+
+    var isTest by remember { mutableStateOf(false) }
+
     Surface(
         color = Color.DarkGray,
         shadowElevation = 30.dp,
         modifier = Modifier.padding(3.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { }){
-            Image(painter = painterResource(id = item.image), contentDescription = null)
-            Column (modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ){
-                Text(
-                    text = item.name,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,5.dp))
-                Text(
-                    text = item.age.toString(),
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,5.dp))
-                Text(
-                    text = item.age.toString(),
-                    fontWeight = FontWeight.Bold,
-                )
-                FloatingActionButton(
-                    containerColor = Color.White,
-                    onClick = {
-                        // FAB를 클릭했을 때 수행할 동작을 여기에 작성합니다.
-                    },
+        Column(modifier = Modifier.animateContentSize()) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { }){
+                Image(painter = painterResource(id = item.image), contentDescription = null)
+                Column(
                     modifier = Modifier
-                        .padding(16.dp)
-                        .size(56.dp) // 크기를 여기서 조정합니다.
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add")
+                        .weight(1f)
+                        .animateContentSize(
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioNoBouncy,
+                                stiffness = Spring.StiffnessMedium
+                            )
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                )
+                {
+                    Text(
+                        text = item.name,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clickable { isTest = !isTest }
+                    )
+                    Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,5.dp))
+                    Text(
+                        text = item.age.toString(),
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,5.dp))
+                    Text(
+                        text = item.age.toString(),
+                        fontWeight = FontWeight.Bold,
+                    )
                 }
+
+            }
+            if (isTest){
+                Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,5.dp))
+                Text(text = "dd")
+                Text(text = "dd")
             }
 
+
         }
+
     }
 
 }
@@ -168,6 +188,7 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
         disabledIconColor = Color.Cyan,
         disabledTextColor = Color.Cyan
     )
+
 
     var isSelected = remember { mutableStateOf(false) }
 
@@ -278,7 +299,9 @@ fun GreetingPreview() {
             }
         )
         if (!isClicked){
-            Box(modifier = Modifier.fillMaxSize().padding(bottom = 200.dp),
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 200.dp),
                 contentAlignment = Alignment.BottomEnd,
                 content = { Text(text = "String !! clicked !!")}
             )
