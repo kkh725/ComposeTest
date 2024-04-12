@@ -4,11 +4,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class MyViewModel : ViewModel() {
+@HiltViewModel
+class MyViewModel @Inject constructor(private val calc: calc)  : ViewModel() {
 
     // LiveData로 관리할 데이터
     private val _myData = mutableStateOf<String>("") //수정 가능한 데이터상태이며 뷰모델에서만 수정이가능하다.
@@ -34,6 +37,6 @@ class MyViewModel : ViewModel() {
     fun updateData(newData: String) {
         _myData.value = newData
         viewModelScope
-
+        calc.plus()
     }
 }

@@ -41,15 +41,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NavTest : AppCompatActivity() {
+@AndroidEntryPoint
+class NavTest @Inject constructor() : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
-
+            val viewmodel : MyViewModel = viewModel()
             val navController = rememberNavController()
 
             NavHost(navController = navController, startDestination = "screen1") {
@@ -68,6 +71,7 @@ class NavTest : AppCompatActivity() {
     }
 }
 
+
     @Composable
     fun Page1(navController: NavController) {
             Button(onClick = {
@@ -77,7 +81,11 @@ class NavTest : AppCompatActivity() {
 
 
     @Composable
-    fun Page2(navController: NavController,viewmodel:MyViewModel = viewModel<MyViewModel>()) {
+    fun Page2(
+        navController: NavController,
+        viewmodel: MyViewModel = viewModel() //생명주기가 같아진다.
+    ) {
+        viewmodel.countFlow
         Column {
             Text(text = "hihi2")
             Button(onClick = { viewmodel.updateData("hi") }) {

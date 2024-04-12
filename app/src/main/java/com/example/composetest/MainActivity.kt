@@ -52,9 +52,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composetest.ui.theme.ComposeTestTheme
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -66,6 +68,8 @@ interface JsonPlaceHolderApi{
     @GET("/todos")
     suspend fun getTodos():List<JsonPlaceHolderApiItem>
 }
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -213,7 +217,9 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
 @Preview
 @Composable
 fun PreviewBottomNavigationBar(){
+    val myViewModel = viewModel<MyViewModel>()
     BottomNavigationBar(modifier = Modifier)
+    myViewModel.countFlow
 
 }
 
@@ -307,6 +313,5 @@ fun GreetingPreview() {
 
     }
 }
-
 
 

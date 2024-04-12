@@ -47,6 +47,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -80,6 +81,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.11.0")
     implementation ("com.squareup.retrofit2:converter-moshi:2.11.0")
     implementation ("com.squareup.moshi:moshi-kotlin:1.15.1")
+    implementation ("com.google.dagger:hilt-android:2.44")
 
     
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.5")
