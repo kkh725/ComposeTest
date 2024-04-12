@@ -28,6 +28,7 @@ class MyViewModel @Inject constructor(private val calc: calc)  : ViewModel() {
     }
 
 
+
     init {
         // 초기 데이터 설정
         _myData.value = "Initial Data"

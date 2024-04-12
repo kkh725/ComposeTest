@@ -69,7 +69,7 @@ interface JsonPlaceHolderApi{
     suspend fun getTodos():List<JsonPlaceHolderApiItem>
 }
 
-@AndroidEntryPoint
+@AndroidEntryPoint //의존성주입
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,8 +91,14 @@ class MainActivity : ComponentActivity() {
 //                api.getTodos()
 //                api.getTodos()
 
-                val todos = async { api.getTodos() }
-                val todos2 = async { api.getTodos() }
+                val todos = async { api.getTodos()
+                }
+                val todos2 = async { api.getTodos() } //작업2
+
+                /**
+                 * 다른작업. api 호출함수 2개.
+                 */
+
                 todos.await()
                 todos2.await()
             }
@@ -282,7 +288,7 @@ fun GreetingPreview() {
                     }// FAB 내부 아이콘의 색상 설정
 
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add")
+                    Icon(Icons.Default.Search, contentDescription = "Add")
                 }
             },
             content = {
