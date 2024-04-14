@@ -83,6 +83,9 @@ dependencies {
     implementation ("com.squareup.moshi:moshi-kotlin:1.15.1")
     implementation ("com.google.dagger:hilt-android:2.44")
 
+    implementation ("com.github.bumptech.glide:compose:1.0.0-beta01")
+    implementation ("com.github.skydoves:landscapist-glide:1.4.7")
+
     
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.5")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")

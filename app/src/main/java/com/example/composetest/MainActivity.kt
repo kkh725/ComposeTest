@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +28,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -47,13 +51,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.example.composetest.ui.theme.ComposeTestTheme
+import com.skydoves.landscapist.CircularReveal
+import com.skydoves.landscapist.glide.GlideImage
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.hilt.android.AndroidEntryPoint
@@ -114,9 +124,32 @@ class MainActivity : ComponentActivity() {
 
         }
     }
+
 }
 
+@Preview
+@Composable
+fun previtemtest(){
+    Card(
+        modifier = Modifier
+            .width(200.dp)
+            .height(600.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
+    ) {
+        GlideImage(
+            imageModel = "https://i.namu.wiki/i/oDFMOHx4sv7TYNQbzqu8eg2QC9Rk5KVUGqDxZEJWrthOuIRA019gsMeK1gdMpQeNOe7bXtHbne-" +
+                    "lrLZl5PDuyjRiEhHnNyxlXF-SptUDAhWNi-S-k9FxWEWTdRnruXs1z5lFAMETAUyhsF50KF24TQ.webp",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize(),
+            circularReveal = CircularReveal(duration = 250),
+            placeHolder = ImageBitmap.imageResource(R.drawable.moon_img)
+        )
+
+
+    }
+}
 //리사이클러뷰 아이템 정의
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun RowItems(item: Item){
 
@@ -132,7 +165,9 @@ fun RowItems(item: Item){
     ) {
         Column(modifier = Modifier.animateContentSize()) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { }){
-                Image(painter = painterResource(id = item.image), contentDescription = null)
+                GlideImage(imageModel = "https://i.namu.wiki/i/oDFMOHx4sv7TYNQbzqu8eg2QC9Rk5KVUGqDxZEJWrthOuIRA019gsMeK1gdMpQeNOe7bXtHbne-lrLZl5PDuyjRiEhHnNyxlXF-SptUDAhWNi-S-k9FxWEWTdRnruXs1z5lFAMETAUyhsF50KF24TQ.webp",)
+
+                Image(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = null)
                 Column(
                     modifier = Modifier
                         .weight(1f)
