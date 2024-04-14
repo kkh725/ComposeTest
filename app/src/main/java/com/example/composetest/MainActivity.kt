@@ -297,7 +297,7 @@ fun GreetingPreview() {
                         .fillMaxSize()
                         .padding(it)
                 ) {
-                    Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,2.5.dp))
+                    Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,3.5.dp))
                     LazyColumn {
                         items(list1) { item ->
                             RowItems(item = item)
