@@ -83,7 +83,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
             val navController = rememberNavController()
 
             NavHost(navController = navController, startDestination = "screen1") {
@@ -97,6 +96,8 @@ class MainActivity : AppCompatActivity() {
                 composable("screen3") {
                 }
             }
+
+
         }
     }
 }
@@ -256,12 +257,17 @@ fun GoogleLoginbtn(navController: NavController){
     ) {
         val task =
             try {
+                //구글 로그인 시도.
                 val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
                     .getResult(ApiException::class.java)
+
+                //구글의 id token을 사용하여 파이어베이스에 인증한다.
                 val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
+
                 FirebaseAuth.getInstance().signInWithCredential(credential)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            //파베 인증 성공 시 수행코드.
                             navController.navigate("screen2")
                             //이쪽코드를 통해 네비게이션 활용
                             Log.d("TAG", "Google Sign In Success")
@@ -271,6 +277,10 @@ fun GoogleLoginbtn(navController: NavController){
                             task.result.user
                             task.result.credential
 
+                        }
+                        else{
+                            //인증 실패 시 메세지.
+                            Log.w(TAG, "signInWithCredential:failure", task.exception)
                         }
                     }
             }
@@ -282,12 +292,14 @@ fun GoogleLoginbtn(navController: NavController){
 
     Button(
         onClick = {
+            //구글 로그인 구성 , 토큰 넣고
             val gso = GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(token)
                 .requestEmail()
                 .build()
 
+            //현재 context와 구글로그인 옵션을 넣고 client생성.
             val googleSignInClient = GoogleSignIn.getClient(context, gso)
             launcher.launch(googleSignInClient.signInIntent)
         }
@@ -296,17 +308,11 @@ fun GoogleLoginbtn(navController: NavController){
     }
 }
 
-//@Preview(
-//    uiMode = Configuration.UI_MODE_NIGHT_YES,
-//    name = "DefaultPreviewDark"
-//)
-//@Preview(
-//    uiMode = Configuration.UI_MODE_NIGHT_NO,
-//    name = "DefaultPreviewLight"
-//)
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun GreetingPreview(navController: NavController) {
+
     ComposeTestTheme {
         val list1: List<Item> = listOf(
             Item("kim", 1, R.drawable.ic_launcher_foreground),
