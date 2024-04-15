@@ -18,7 +18,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    primary = Purple40, //버튼색깔같은 일반적인 접근
     secondary = PurpleGrey40,
     tertiary = Pink40
 
