@@ -34,7 +34,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun ComposeTestTheme(
+fun ComposeTestTheme( //이 코드에서 테마 다른테마까지 지정 가능할듯 싶다. 더 깊이 알아보기
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
