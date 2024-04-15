@@ -1,11 +1,13 @@
 package com.example.composetest
 
+import android.app.Activity
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -26,8 +28,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,103 +54,157 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.example.composetest.ui.theme.ComposeTestTheme
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.GET
-import kotlin.system.measureTimeMillis
-
-interface JsonPlaceHolderApi{
-    @GET("/todos")
-    suspend fun getTodos():List<JsonPlaceHolderApiItem>
-}
 
 @AndroidEntryPoint //의존성주입
-class MainActivity : ComponentActivity() {
+class MainActivity : Activity() {
+
+    // [START declare_auth]
+    private lateinit var auth: FirebaseAuth
+    private lateinit var googleApiClient : GoogleApiClient
+    // [END declare_auth]
+
+    private lateinit var googleSignInClient: GoogleSignInClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
+        // [START config_signin]
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
             .build()
 
-        val api = Retrofit
-            .Builder()
-            .baseUrl("https://jsonplaceholder.typicode.com")
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-            .create(JsonPlaceHolderApi::class.java)
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        // [END config_signin]
 
-        lifecycleScope.launch { //레트로핏 자체에서 withContext를 활용해 io 디스패처로 진입함.
-            val time = measureTimeMillis {
-//                api.getTodos()
-//                api.getTodos()
-
-                val todos = async { api.getTodos()
-                }
-                val todos2 = async { api.getTodos() } //작업2
-
-                /**
-                 * 다른작업. api 호출함수 2개.
-                 */
-
-                todos.await()
-                todos2.await()
-            }
-            Log.d("api 호출 시간","time : $time")
-
-        }
-
-        setContent {
-
-                        GreetingPreview()
-
-
-
-        }
+        // [START initialize_auth]
+        // Initialize Firebase Auth
+        auth = Firebase.auth
+        // [END initialize_auth]
     }
 
+    // [START on_start_check_user]
+    override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        updateUI(currentUser)
+    }
+    // [END on_start_check_user]
+
+    // [START onactivityresult]
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)!!
+                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e)
+            }
+        }
+    }
+    // [END onactivityresult]
+
+    // [START auth_with_google]
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential:success")
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    updateUI(null)
+                }
+            }
+    }
+    // [END auth_with_google]
+
+    // [START signin]
+    private fun signIn() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+    // [END signin]
+
+    private fun updateUI(user: FirebaseUser?) {
+    }
+
+    companion object {
+        private const val TAG = "GoogleActivity"
+        private const val RC_SIGN_IN = 9001
+    }
 }
 
 @Preview
 @Composable
-fun previtemtest(){
-    Card(
-        modifier = Modifier
-            .width(200.dp)
-            .height(600.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
-    ) {
-        GlideImage(
-            imageModel = "https://i.namu.wiki/i/oDFMOHx4sv7TYNQbzqu8eg2QC9Rk5KVUGqDxZEJWrthOuIRA019gsMeK1gdMpQeNOe7bXtHbne-" +
-                    "lrLZl5PDuyjRiEhHnNyxlXF-SptUDAhWNi-S-k9FxWEWTdRnruXs1z5lFAMETAUyhsF50KF24TQ.webp",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
-            circularReveal = CircularReveal(duration = 250),
-            placeHolder = ImageBitmap.imageResource(R.drawable.moon_img)
-        )
+fun Previtemtest() {
 
+    var isImageClicked by remember { mutableStateOf(false) }
+    //card에 이미지와 버튼을 넣어서 리사이클러뷰를 만드는코드
+
+
+    Column {
+        Card(
+            modifier = Modifier
+                .width(200.dp)
+                .height(500.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
+        ) {
+            GlideImage(
+                imageModel = "https://i.namu.wiki/i/oDFMOHx4sv7TYNQbzqu8eg2QC9Rk5KVUGqDxZEJWrthOuIRA019gsMeK1gdMpQeNOe7bXtHbne-" +
+                        "lrLZl5PDuyjRiEhHnNyxlXF-SptUDAhWNi-S-k9FxWEWTdRnruXs1z5lFAMETAUyhsF50KF24TQ.webp",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+                circularReveal = CircularReveal(duration = 250),
+
+            )
+        }
+        Text(text = "string")
+        Icon(
+            modifier = Modifier.clickable { isImageClicked = !isImageClicked },
+            imageVector = if (isImageClicked) Icons.Default.Search else Icons.Default.Settings,
+            contentDescription = null,
+            tint = Color.Black
+        )
 
     }
 }
+
 //리사이클러뷰 아이템 정의
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -255,13 +312,57 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
   }
 }
 
-@Preview
 @Composable
-fun PreviewBottomNavigationBar(){
-    val myViewModel = viewModel<MyViewModel>()
-    BottomNavigationBar(modifier = Modifier)
-    myViewModel.countFlow
+fun GoogleLoginbtn(){
+    val context = LocalContext.current
+    val token = stringResource(R.string.default_web_client_id)
 
+//    val launcherNav = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.StartActivityForResult()
+//    ) {
+//        navController.navigate(Screen.MainScreen.route)
+//    }
+    val auth : FirebaseAuth = Firebase.auth
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+    ) {
+        val task =
+            try {
+                val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+                    .getResult(ApiException::class.java)
+                val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
+                FirebaseAuth.getInstance().signInWithCredential(credential)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            //이쪽코드를 통해 네비게이션 활용
+                            Log.d("TAG", "Google Sign In Success")
+                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                            Log.d(TAG, "firebaseAuthWithGoogle:" + auth.currentUser.toString())
+
+
+                        }
+                    }
+            }
+            catch (e: ApiException) {
+                Log.w("TAG", "GoogleSign in Failed", e)
+            }
+    }
+
+
+    Button(
+        onClick = {
+            val gso = GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(token)
+                .requestEmail()
+                .build()
+
+            val googleSignInClient = GoogleSignIn.getClient(context, gso)
+            launcher.launch(googleSignInClient.signInIntent)
+        }
+    ) {
+        Text(text = "Sign In")
+    }
 }
 
 @Preview(
@@ -298,7 +399,7 @@ fun GreetingPreview() {
                     colors = TopAppBarDefaults.topAppBarColors(Color.Gray),
                     navigationIcon = {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.Default.Add,
                             contentDescription = "Back",
                             modifier = Modifier.clickable { })
                     },
@@ -332,6 +433,7 @@ fun GreetingPreview() {
                         .fillMaxSize()
                         .padding(it)
                 ) {
+                    GoogleLoginbtn()
                     Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,3.5.dp))
                     LazyColumn {
                         items(list1) { item ->

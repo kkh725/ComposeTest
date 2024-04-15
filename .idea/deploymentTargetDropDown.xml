@@ -2,17 +2,27 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="Cardtest">
-        <State />
-      </entry>
       <entry key="GreetingPreview">
-        <State />
-      </entry>
-      <entry key="Myapp">
         <State />
       </entry>
       <entry key="PrevGreeting">
         <State />
+      </entry>
+      <entry key="Previtemtest (1)">
+        <State>
+          <runningDeviceTargetSelectedWithDropDown>
+            <Target>
+              <type value="RUNNING_DEVICE_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Client_Test.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-15T08:56:29.835044Z" />
+        </State>
       </entry>
       <entry key="app">
         <State />
