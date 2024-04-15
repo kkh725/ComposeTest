@@ -64,7 +64,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.example.composetest.ui.theme.ComposeTestTheme
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -140,7 +139,6 @@ fun Previtemtest() {
 }
 
 //리사이클러뷰 아이템 정의
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun RowItems(item: Item){
 
