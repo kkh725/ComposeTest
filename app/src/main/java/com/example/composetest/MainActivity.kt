@@ -276,7 +276,6 @@ fun GoogleLoginbtn(navController: NavController){
                             Log.d(TAG, "firebaseAuthWithGoogle:" + auth.currentUser.toString())
                             task.result.user
                             task.result.credential
-
                         }
                         else{
                             //인증 실패 시 메세지.
