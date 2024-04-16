@@ -77,10 +77,16 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint //의존성주입
 class MainActivity : AppCompatActivity() {
+    override fun onStart() {
+        super.onStart()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            //파이어베이스 로그아웃
+            Firebase.auth.signOut()
             val navController = rememberNavController()
 
             NavHost(navController = navController, startDestination = "screen1") {
@@ -247,6 +253,8 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
 fun GoogleLoginbtn(navController: NavController){
     val context = LocalContext.current
     val token = stringResource(R.string.default_web_client_id)
+    Log.d(TAG,"firebaseAuthWithGoogle" + FirebaseAuth.getInstance().currentUser.toString())
+
 
     val auth : FirebaseAuth = Firebase.auth
     val launcher = rememberLauncherForActivityResult(
@@ -268,11 +276,18 @@ fun GoogleLoginbtn(navController: NavController){
                             navController.navigate("screen2")
                             //이쪽코드를 통해 네비게이션 활용
                             Log.d("TAG", "Google Sign In Success")
-                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.idToken) //이 토큰을 주로 식별용으로 사용할것.
-                            Log.d(TAG, "firebaseAuthWithGoogle:" + auth.currentUser.toString())
-                            task.result.user
-                            task.result.credential
+                            Log.d(TAG, "firebaseAuthWithGoogle id:" + account.id)
+                            Log.d(TAG, "firebaseAuthWithGoogle idtoken:" + account.idToken) //이 토큰을 주로 식별용으로 사용할것.
+                            Log.d(TAG, "firebaseAuthWithGoogle current user:" + auth.currentUser!!.displayName.toString()) //로그인 되어있을때 사용. 아니면 null
+                            Log.d(TAG, "firebaseAuthWithGoogle current user:" + auth.currentUser!!.photoUrl.toString()) //로그인 시 이메일인증
+                            Log.d(TAG, "firebaseAuthWithGoogle user:" + task.result.user!!.displayName.toString()) //구글 로그인 할때의 정보를 가져오는듯?
+                            Log.d(TAG, "firebaseAuthWithGoogle credential :" + task.result.credential.toString())
+
+
+                            /**
+                             * 일반적으로, 앱의 실행 중에는 auth.currentUser를 사용하여 현재 로그인된 사용자를 확인하고,
+                             * 로그인 작업을 수행할 때는 작업 결과에서 사용자 정보를 가져와야 한다.
+                             */
                         }
                         else{
                             //인증 실패 시 메세지.
