@@ -40,4 +40,7 @@ class MyViewModel @Inject constructor(private val calc: calc)  : ViewModel() {
         viewModelScope
         calc.plus()
     }
+
+
+
 }

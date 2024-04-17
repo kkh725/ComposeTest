@@ -98,12 +98,14 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 composable("screen3") {
+                    Page3(navController = navController)
                 }
             }
 
 
         }
     }
+    
 }
 
 
@@ -315,7 +317,7 @@ fun GoogleLoginbtn(navController: NavController){
             launcher.launch(googleSignInClient.signInIntent)
         }
     ) {
-        Text(text = "Sign In")
+        Text(text = "Google Sign In")
     }
 }
 
