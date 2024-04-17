@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                     GreetingPreview(navController)
                 }
                 composable("screen2") {
-                    Page1(navController)
+                    GreetingPreview(navController)
 
                 }
                 composable("screen3") {
