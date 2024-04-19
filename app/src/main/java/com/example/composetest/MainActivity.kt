@@ -98,7 +98,8 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 composable("screen3") {
-                    Page3(navController = navController)
+                    GreetingPreview(navController)
+
                 }
             }
 
