@@ -1,6 +1,5 @@
 package com.example.composetest
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -65,11 +64,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composetest.googleLogin.GoogleLoginViewModel
 import com.example.composetest.ui.theme.ComposeTestTheme
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.skydoves.landscapist.CircularReveal
@@ -93,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
             NavHost(navController = navController, startDestination = "screen1") {
                 composable("screen1") {
-                    GreetingPreview(navController)
+                    GoogleLoginBtn(viewModel,navController)
                 }
                 composable("screen2") {
                     GreetingPreview(navController)
@@ -251,72 +245,20 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
 }
 
 @Composable
-fun GoogleLoginbtn(navController: NavController){
-
+fun GoogleLoginBtn(viewModel: GoogleLoginViewModel, navController: NavController) {
     val context = LocalContext.current
-    val token = BuildConfig.google_native_api_key
-
-    val auth : FirebaseAuth = Firebase.auth
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
-    ) {
-        val task =
-            try {
-                //구글 로그인 시도.
-                val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-                    .getResult(ApiException::class.java)
-
-                //구글의 id token을 사용하여 파이어베이스에 인증한다.
-                val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
-
-                FirebaseAuth.getInstance().signInWithCredential(credential)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            //파베 인증 성공 시 수행코드.
-                            navController.navigate("screen2")
-                            //이쪽코드를 통해 네비게이션 활용
-                            Log.d("TAG", "Google Sign In Success")
-                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.idToken) //이 토큰을 주로 식별용으로 사용할것.
-                            Log.d(TAG, "firebaseAuthWithGoogle:" + auth.currentUser.toString())
-                            Log.d(TAG, "firebaseAuthWithGoogle current user:" + auth.currentUser!!.displayName.toString()) //로그인 되어있을때 사용자이름
-                            Log.d(TAG, "firebaseAuthWithGoogle current user:" + auth.currentUser!!.photoUrl.toString()) //사용자 photo 정보 (구글)
-
-                            Log.d(TAG, "firebaseAuthWithGoogle user:" + task.result.user!!.displayName.toString()) //로그인 할때 가져오게되어있음.
-
-
-                        }
-                        else{
-                            //인증 실패 시 메세지.
-                            Log.w("tokeneee", token)
-                        }
-                    }
-            }
-            catch (e: ApiException) {
-                Log.w("TAG", "GoogleSign in Failed", e)
-                Log.w("tokeneee", token)
-                Log.w("tokeneee", BuildConfig.google_native_api_key)
-
-
-            }
+    ) { result ->
+        viewModel.handleGoogleSignInResult(result.data, navController)
     }
-
 
     Button(
         onClick = {
-            //구글 로그인 구성 , 토큰 넣고
-            val gso = GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(token)
-                .requestEmail()
-                .build()
-
-            //현재 context와 구글로그인 옵션을 넣고 client생성.
-            val googleSignInClient = GoogleSignIn.getClient(context, gso)
-            launcher.launch(googleSignInClient.signInIntent)
+            viewModel.signInWithGoogle(launcher,context)
         }
     ) {
-        Text(text = "Sign In")
+        Text(text = "Google Sign In")
     }
 }
 
@@ -382,7 +324,6 @@ fun GreetingPreview(navController: NavController) {
                         .fillMaxSize()
                         .padding(it)
                 ) {
-                    GoogleLoginbtn(navController)
 
                     Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,3.5.dp))
                     LazyColumn {
