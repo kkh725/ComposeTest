@@ -55,7 +55,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -250,7 +249,7 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
 @Composable
 fun GoogleLoginbtn(navController: NavController){
     val context = LocalContext.current
-    val token = stringResource(R.string.default_web_client_id)
+    val token = BuildConfig.google_native_api_key
     Log.d(TAG,"firebaseAuthWithGoogle" + FirebaseAuth.getInstance().currentUser.toString())
 
 

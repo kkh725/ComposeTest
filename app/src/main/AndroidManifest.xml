@@ -32,15 +32,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/black" /> <!-- [END fcm_default_icon] -->
-        <activity
-            android:name=".MainActivity2"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.DayNight"></activity>
-        <activity
-            android:name=".NavTest"
-            android:exported="true"
-            android:label="@string/title_activity_nav_compose"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

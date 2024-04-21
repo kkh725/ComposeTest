@@ -107,6 +107,7 @@ proguard/
 *.ipr
 *~
 *.swp
+/*/google-services.json
 
 # Keystore files
 
