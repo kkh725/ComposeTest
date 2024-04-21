@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -62,6 +63,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composetest.googleLogin.GoogleLoginViewModel
 import com.example.composetest.ui.theme.ComposeTestTheme
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -80,6 +82,8 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
+        val viewModel: GoogleLoginViewModel by viewModels()
+
         super.onCreate(savedInstanceState)
         setContent {
 
@@ -248,10 +252,9 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
 
 @Composable
 fun GoogleLoginbtn(navController: NavController){
+
     val context = LocalContext.current
     val token = BuildConfig.google_native_api_key
-    Log.d(TAG,"firebaseAuthWithGoogle" + FirebaseAuth.getInstance().currentUser.toString())
-
 
     val auth : FirebaseAuth = Firebase.auth
     val launcher = rememberLauncherForActivityResult(
@@ -273,27 +276,28 @@ fun GoogleLoginbtn(navController: NavController){
                             navController.navigate("screen2")
                             //이쪽코드를 통해 네비게이션 활용
                             Log.d("TAG", "Google Sign In Success")
-                            Log.d(TAG, "firebaseAuthWithGoogle id:" + account.id)
-                            Log.d(TAG, "firebaseAuthWithGoogle idtoken:" + account.idToken) //이 토큰을 주로 식별용으로 사용할것.
-                            Log.d(TAG, "firebaseAuthWithGoogle current user:" + auth.currentUser!!.displayName.toString()) //로그인 되어있을때 사용. 아니면 null
-                            Log.d(TAG, "firebaseAuthWithGoogle current user:" + auth.currentUser!!.photoUrl.toString()) //로그인 시 이메일인증
-                            Log.d(TAG, "firebaseAuthWithGoogle user:" + task.result.user!!.displayName.toString()) //구글 로그인 할때의 정보를 가져오는듯?
-                            Log.d(TAG, "firebaseAuthWithGoogle credential :" + task.result.credential.toString())
+                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.idToken) //이 토큰을 주로 식별용으로 사용할것.
+                            Log.d(TAG, "firebaseAuthWithGoogle:" + auth.currentUser.toString())
+                            Log.d(TAG, "firebaseAuthWithGoogle current user:" + auth.currentUser!!.displayName.toString()) //로그인 되어있을때 사용자이름
+                            Log.d(TAG, "firebaseAuthWithGoogle current user:" + auth.currentUser!!.photoUrl.toString()) //사용자 photo 정보 (구글)
+
+                            Log.d(TAG, "firebaseAuthWithGoogle user:" + task.result.user!!.displayName.toString()) //로그인 할때 가져오게되어있음.
 
 
-                            /**
-                             * 일반적으로, 앱의 실행 중에는 auth.currentUser를 사용하여 현재 로그인된 사용자를 확인하고,
-                             * 로그인 작업을 수행할 때는 작업 결과에서 사용자 정보를 가져와야 한다.
-                             */
                         }
                         else{
                             //인증 실패 시 메세지.
-                            Log.w(TAG, "signInWithCredential:failure", task.exception)
+                            Log.w("tokeneee", token)
                         }
                     }
             }
             catch (e: ApiException) {
                 Log.w("TAG", "GoogleSign in Failed", e)
+                Log.w("tokeneee", token)
+                Log.w("tokeneee", BuildConfig.google_native_api_key)
+
+
             }
     }
 
@@ -312,7 +316,7 @@ fun GoogleLoginbtn(navController: NavController){
             launcher.launch(googleSignInClient.signInIntent)
         }
     ) {
-        Text(text = "Google Sign In")
+        Text(text = "Sign In")
     }
 }
 
@@ -342,6 +346,7 @@ fun GreetingPreview(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     title = { Text(text = "Top Bar") },
                     navigationIcon = {
+
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Back",
@@ -378,6 +383,7 @@ fun GreetingPreview(navController: NavController) {
                         .padding(it)
                 ) {
                     GoogleLoginbtn(navController)
+
                     Spacer(modifier = Modifier.padding(0.dp,0.dp,0.dp,3.5.dp))
                     LazyColumn {
                         items(list1) { item ->
