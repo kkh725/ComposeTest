@@ -62,6 +62,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composetest.googleLogin.GoogleLoginSuccessDialog
 import com.example.composetest.googleLogin.GoogleLoginViewModel
 import com.example.composetest.ui.theme.ComposeTestTheme
 import com.google.firebase.auth.ktx.auth
@@ -246,6 +247,7 @@ fun BottomNavigationBar(modifier: Modifier=Modifier
 
 @Composable
 fun GoogleLoginBtn(viewModel: GoogleLoginViewModel, navController: NavController) {
+
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -253,12 +255,16 @@ fun GoogleLoginBtn(viewModel: GoogleLoginViewModel, navController: NavController
         viewModel.handleGoogleSignInResult(result.data, navController)
     }
 
+    //버튼 클릭시 구글 로그인 시도
     Button(
         onClick = {
             viewModel.signInWithGoogle(launcher,context)
         }
     ) {
         Text(text = "Google Sign In")
+    }
+    if (viewModel.state.value) {
+        GoogleLoginSuccessDialog(viewModel.state)
     }
 }
 

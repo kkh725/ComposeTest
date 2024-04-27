@@ -5,7 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.compose.runtime.State
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
@@ -20,9 +24,7 @@ import com.google.firebase.ktx.Firebase
 
 class GoogleLoginViewModel : ViewModel() {
     private val auth : FirebaseAuth = Firebase.auth
-
-    private val _isFailState = mutableStateOf(false)
-    val isFailState : State<Boolean> = _isFailState
+    var state = mutableStateOf(false)
 
     fun signInWithGoogle(
         launcher: ManagedActivityResultLauncher<Intent,androidx.activity.result.ActivityResult>,
@@ -49,6 +51,7 @@ class GoogleLoginViewModel : ViewModel() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    state.value = true
                     // 로그인 성공
                     navController.navigate("screen2")
                     Log.d("TAG", "Google Sign In Success")
@@ -70,4 +73,17 @@ class GoogleLoginViewModel : ViewModel() {
 
 
 
+}
+
+@Composable
+fun GoogleLoginSuccessDialog(dialogState: MutableState<Boolean>){
+    AlertDialog(
+        onDismissRequest = { dialogState.value = false},
+        confirmButton = {
+            Button(onClick = { dialogState.value = false },) {
+                Text(text = "확인")
+            }
+        },
+        text = { Text(text = "구글 로그인 성공!") }
+    )
 }
