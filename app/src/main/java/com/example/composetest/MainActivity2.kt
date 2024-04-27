@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
@@ -29,6 +31,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.composetest.ui.theme.ComposeTestTheme
 
 class MainActivity2 : AppCompatActivity() {
@@ -39,10 +42,7 @@ class MainActivity2 : AppCompatActivity() {
             ComposeTestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column (modifier = Modifier.padding(innerPadding)){
-//                        EditText()
-//                        MyEditText(LocalContext.current)
-                        test2()
-
+                        BoldTextFieldWithButton()
                     }
                 }
             }
@@ -111,9 +111,11 @@ fun EditText(){
 }
 @Preview
 @Composable
-fun test2(){
+fun test2() {
+
+    var color = Color.Red
     var textFieldValue = TextFieldValue(buildAnnotatedString {
-        withStyle(style = SpanStyle(color = Color.Red, fontWeight = FontWeight.Bold)) {
+        withStyle(style = SpanStyle(color = color, fontWeight = FontWeight.Bold)) {
             append("hi")
         }
     })
@@ -127,22 +129,82 @@ fun test2(){
                 textValue = newValue
             },
 
-        )
+            )
 
-        Button(onClick = {textValue = TextFieldValue(buildAnnotatedString {
-            withStyle(style = SpanStyle(color = Color.Red, fontWeight = FontWeight.Bold)) {
-                append(textValue.getSelectedText())
-            }
-        })}) {
 
-            Text(text = textValue.text.plus(textValue.text))
+        Button(onClick = {})
+        {
+
             println("selected text: {$textValue}")
-            println("selected text: {${textValue.getSelectedText()}}")
+            println("selected text: {${textValue.text[0] }}")
+
+
+            Spacer(modifier = Modifier.height(46.dp))
+            Text(text = textValue.selection.toString())
 
         }
-    }
 
+    }
 }
+@Composable
+fun TextWithBoldButton() {
+    var isButtonClicked by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+
+
+    Column {
+        BasicTextField(value = text, onValueChange = {it->
+            text = it
+        },
+            textStyle = TextStyle(fontWeight = FontWeight.Bold)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = {
+        }) {
+            Text("Bold Selected Text")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+    }
+}
+@Composable
+fun BoldTextFieldWithButton() {
+    var textValue by remember { mutableStateOf("") }
+    var isBold by remember { mutableStateOf(false) }
+    var boldTextStartIndex by remember { mutableStateOf(-1) }
+
+    Column {
+        BasicTextField(
+            value = textValue,
+            onValueChange = { newValue ->
+                textValue = newValue
+            },
+            textStyle = TextStyle(
+                fontWeight = if (boldTextStartIndex != -1) FontWeight.Bold else FontWeight.Normal
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = {
+            isBold = true // 버튼을 클릭할 때 볼드체 텍스트 스타일 적용
+            boldTextStartIndex = textValue.length // 클릭한 시점부터 볼드체 적용 시작
+        }) {
+            Text("Apply Bold Style from Clicked Point")
+        }
+    }
+}
+
+
+
+
+
+
+
 
 
 
