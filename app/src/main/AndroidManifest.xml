@@ -31,6 +31,14 @@
             android:name=".MainActivity2"
             android:exported="true"
             android:theme="@style/Theme.ComposeTest">
+
+
+
+        </activity>
+        <activity
+            android:name=".NavTest"
+            android:exported="true"
+            android:theme="@style/Theme.ComposeTest">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

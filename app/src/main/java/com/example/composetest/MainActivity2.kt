@@ -9,7 +9,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +37,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -127,13 +127,8 @@ fun EditText(){
             println("selected text: {${textValue.getSelectedText()}}")
 
         }
-        MySwitchWithIcon(checked = isChecked, onCheckedChange = {new->
-            isChecked = new
-        })
-        Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.TopStart) {
-            Switch2()
-
-        }
+        Switch2()
+        Switch(checked = true, onCheckedChange = {})
 
 
 
@@ -187,6 +182,7 @@ fun Switch2(
 
     Canvas(
         modifier = Modifier
+            .padding(start = (width.value / 1.85).dp, top = (height.value / 1.3).dp)
             .size(width = width, height = height)
             .scale(scale = scale)
             .pointerInput(Unit) {
@@ -213,7 +209,7 @@ fun Switch2(
                 x = animatePosition.value,
                 y = size.height / 2
             ),
-            style = Stroke(width = strokeWidth.toPx()) //fill / Stroke
+            style = Fill //Fill / Stroke
 
         )
     }
