@@ -16,11 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -134,24 +130,6 @@ fun EditText(){
 
 
     }
-}
-@Composable
-fun MySwitchWithIcon(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    val icon = if (checked) Icons.Default.Favorite else Icons.Default.FavoriteBorder
-
-    Switch(
-        modifier = Modifier
-            .scale(2f)
-            .padding(20.dp),
-        checked = checked,
-        onCheckedChange = onCheckedChange,
-        thumbContent = {
-            Icon(icon, contentDescription = "Switch Icon")
-        }
-    )
 }
 
 @Composable
