@@ -5,24 +5,42 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -31,6 +49,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.composetest.ui.theme.ComposeTestTheme
 
@@ -41,8 +60,14 @@ class MainActivity2 : AppCompatActivity() {
         setContent {
             ComposeTestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column (modifier = Modifier.padding(innerPadding)){
-                        BoldTextFieldWithButton()
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        EditText()
                     }
                 }
             }
@@ -52,10 +77,6 @@ class MainActivity2 : AppCompatActivity() {
     }
 }
 
-@Composable
-fun test(){
-    Text(text = "String")
-}
 
 @Preview
 @Composable
@@ -67,6 +88,7 @@ fun EditText(){
         append("bold")}
     var isBold by remember { mutableStateOf(false) }
     var textValue by remember { mutableStateOf(TextFieldValue()) }
+    var isChecked by remember { mutableStateOf(false) }
 
 
     Column {
@@ -105,103 +127,101 @@ fun EditText(){
             println("selected text: {${textValue.getSelectedText()}}")
 
         }
+        MySwitchWithIcon(checked = isChecked, onCheckedChange = {new->
+            isChecked = new
+        })
+        Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.TopStart) {
+            Switch2()
+
+        }
+
+
 
 
     }
 }
-@Preview
 @Composable
-fun test2() {
+fun MySwitchWithIcon(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    val icon = if (checked) Icons.Default.Favorite else Icons.Default.FavoriteBorder
 
-    var color = Color.Red
-    var textFieldValue = TextFieldValue(buildAnnotatedString {
-        withStyle(style = SpanStyle(color = color, fontWeight = FontWeight.Bold)) {
-            append("hi")
+    Switch(
+        modifier = Modifier
+            .scale(2f)
+            .padding(20.dp),
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        thumbContent = {
+            Icon(icon, contentDescription = "Switch Icon")
         }
-    })
-    var textValue by remember { mutableStateOf(TextFieldValue()) }
-
-    Column {
-        BasicTextField(
-
-            value = textValue,
-            onValueChange = { newValue ->
-                textValue = newValue
-            },
-
-            )
-
-
-        Button(onClick = {})
-        {
-
-            println("selected text: {$textValue}")
-            println("selected text: {${textValue.text[0] }}")
-
-
-            Spacer(modifier = Modifier.height(46.dp))
-            Text(text = textValue.selection.toString())
-
-        }
-
-    }
+    )
 }
+
 @Composable
-fun TextWithBoldButton() {
-    var isButtonClicked by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf("") }
+fun Switch2(
+    scale: Float = 2f,
+    width: Dp = 40.dp,
+    height: Dp = 20.dp,
+    strokeWidth: Dp = 2.dp,
+    checkedTrackColor: Color = Color.Red,
+    uncheckedTrackColor: Color = Color(0xFFe0e0e0),
+    gapBetweenThumbAndTrackEdge: Dp = 4.dp
+) {
 
+    val switchON = remember {
+        mutableStateOf(true) // Initially the switch is ON
+    }
 
-    Column {
-        BasicTextField(value = text, onValueChange = {it->
-            text = it
-        },
-            textStyle = TextStyle(fontWeight = FontWeight.Bold)
+    val thumbRadius = (height / 2) - gapBetweenThumbAndTrackEdge
+
+    // To move thumb, we need to calculate the position (along x axis)
+    val animatePosition = animateFloatAsState(
+        targetValue = if (switchON.value)
+            with(LocalDensity.current) { (width - thumbRadius - gapBetweenThumbAndTrackEdge).toPx() }
+        else
+            with(LocalDensity.current) { (thumbRadius + gapBetweenThumbAndTrackEdge).toPx() },
+        label = ""
+    )
+
+    Canvas(
+        modifier = Modifier
+            .size(width = width, height = height)
+            .scale(scale = scale)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        // This is called when the user taps on the canvas
+                        switchON.value = !switchON.value
+                    }
+                )
+            }
+    ) {
+        // Track
+        drawRoundRect(
+            color = if (switchON.value) checkedTrackColor else uncheckedTrackColor,
+            cornerRadius = CornerRadius(x = 10.dp.toPx(), y = 10.dp.toPx()),
+            style = Stroke(width = strokeWidth.toPx())
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        // Thumb
+        drawCircle(
+            color = if (switchON.value) checkedTrackColor else uncheckedTrackColor,
+            radius = thumbRadius.toPx(),
+            center = Offset(
+                x = animatePosition.value,
+                y = size.height / 2
+            ),
+            style = Stroke(width = strokeWidth.toPx()) //fill / Stroke
 
-        Button(onClick = {
-        }) {
-            Text("Bold Selected Text")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-    }
-}
-@Composable
-fun BoldTextFieldWithButton() {
-    var textValue by remember { mutableStateOf("") }
-    var isBold by remember { mutableStateOf(false) }
-    var boldTextStartIndex by remember { mutableStateOf(-1) }
-
-    Column {
-        BasicTextField(
-            value = textValue,
-            onValueChange = { newValue ->
-                textValue = newValue
-            },
-            textStyle = TextStyle(
-                fontWeight = if (boldTextStartIndex != -1) FontWeight.Bold else FontWeight.Normal
-            )
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = {
-            isBold = true // 버튼을 클릭할 때 볼드체 텍스트 스타일 적용
-            boldTextStartIndex = textValue.length // 클릭한 시점부터 볼드체 적용 시작
-        }) {
-            Text("Apply Bold Style from Clicked Point")
-        }
     }
+
+    Spacer(modifier = Modifier.height(18.dp))
+
+    Text(text = if (switchON.value) "ON" else "OFF")
 }
-
-
-
-
 
 
 
